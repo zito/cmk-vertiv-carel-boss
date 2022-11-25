@@ -66,17 +66,13 @@ def parse_vertiv_carel_boss(string_table: StringTable) -> Section:
         if parsef:
             value = parsef(value)
         parsed.append(value)
-    import sys
-    import pprint
-    pprint.pprint(string_table, stream=sys.stderr)
-    pprint.pprint(parsed, stream=sys.stderr)
     return parsed
 
 def discover_vertiv_carel_boss(section: Section) -> DiscoveryResult:
     for i, value in enumerate(section):
         yield Service(item=_get_label(i))
 
-def check_vertiv_carel_boss(item: str, params: Dict[str, Any], section: Section) -> CheckResult:
+def check_vertiv_carel_boss(item: str, params: TempParamType, section: Section) -> CheckResult:
     i = _get_index_from_label(item)
     ident = _get_ident(i)
     value = section[i]
@@ -105,7 +101,8 @@ register.snmp_section(
 register.check_plugin(
     name = "vertiv_carel_boss",
     service_name = "BOSS %s",
-    check_function = check_vertiv_carel_boss,
     check_default_parameters = {},
+    check_function = check_vertiv_carel_boss,
     discovery_function = discover_vertiv_carel_boss,
+    check_ruleset_name="temperature",
 )
